@@ -28,6 +28,10 @@ const options = {
     describe: "additional domains to allow for CORS",
     default: [] as string[],
   },
+  directory: {
+    type: "string" as const,
+    describe: "directory to serve",
+  },
 }
 
 export type NetworkOptions = InferredOptionTypes<typeof options>
@@ -55,6 +59,7 @@ export async function resolveNetworkOptions(args: NetworkOptions) {
   const configCors = config?.server?.cors ?? []
   const argsCors = Array.isArray(args.cors) ? args.cors : args.cors ? [args.cors] : []
   const cors = [...configCors, ...argsCors]
+  const directory = args.directory
 
-  return { hostname, port, mdns, mdnsDomain, cors }
+  return { hostname, port, mdns, mdnsDomain, cors, directory }
 }

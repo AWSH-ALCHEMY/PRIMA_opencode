@@ -49,6 +49,7 @@ export namespace Server {
 
   let _url: URL | undefined
   let _corsWhitelist: string[] = []
+  let _directory: string | undefined
 
   export function url(): URL {
     return _url ?? new URL("http://localhost:4096")
@@ -194,7 +195,7 @@ export namespace Server {
         )
         .use(async (c, next) => {
           if (c.req.path === "/log") return next()
-          const raw = c.req.query("directory") || c.req.header("x-opencode-directory") || process.cwd()
+          const raw = c.req.query("directory") || c.req.header("x-opencode-directory") || _directory || process.cwd()
           const directory = (() => {
             try {
               return decodeURIComponent(raw)
@@ -579,8 +580,10 @@ export namespace Server {
     mdns?: boolean
     mdnsDomain?: string
     cors?: string[]
+    directory?: string
   }) {
     _corsWhitelist = opts.cors ?? []
+    _directory = opts.directory
 
     const args = {
       hostname: opts.hostname,
